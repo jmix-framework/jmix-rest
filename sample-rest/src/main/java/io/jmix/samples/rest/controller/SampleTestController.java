@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Objects;
 
 @RestController
-@RequestMapping(value = "/myapi/sample")
+@RequestMapping(value = "/rest/sample")
 public class SampleTestController {
 
     @Autowired
