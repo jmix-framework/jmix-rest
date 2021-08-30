@@ -17,10 +17,8 @@
 package io.jmix.rest.impl.controller;
 
 import io.jmix.core.AccessManager;
-import io.jmix.core.FileClientUtils;
+import io.jmix.core.FileClientManager;
 import io.jmix.core.FileRef;
-import io.jmix.core.FileStorage;
-import io.jmix.core.FileStorageLocator;
 import io.jmix.core.Metadata;
 import io.jmix.rest.accesscontext.RestFileDownloadContext;
 import io.jmix.rest.exception.RestAPIException;
@@ -45,11 +43,11 @@ public class FileDownloadController {
     private static final Logger log = LoggerFactory.getLogger(FileDownloadController.class);
 
     @Autowired
-    protected FileStorageLocator fileStorageLocator;
-    @Autowired
     protected Metadata metadata;
     @Autowired
     protected AccessManager accessManager;
+    @Autowired
+    FileClientManager fileClientManager;
 
     @GetMapping
     public void downloadFile(@RequestParam String fileRef,
@@ -60,9 +58,7 @@ public class FileDownloadController {
         try {
             FileRef fileReference;
             fileReference = FileRef.fromString(fileRef);
-            FileStorage fileStorage = FileClientUtils.getFileStorageByNameOrDefault(fileStorageLocator,
-                    fileReference.getStorageName(), fileReference.getFileName());
-            FileClientUtils.downloadAndWriteResponse(fileReference, fileStorage, attachment, response);
+            fileClientManager.downloadAndWriteResponse(fileReference, fileReference.getStorageName(), attachment, response);
         } catch (IllegalArgumentException e) {
             throw new RestAPIException("Invalid file reference",
                     String.format("Cannot convert '%s' into valid file reference", fileRef),

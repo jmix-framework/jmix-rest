@@ -17,7 +17,7 @@
 package io.jmix.rest.impl.controller;
 
 import io.jmix.core.AccessManager;
-import io.jmix.core.FileClientUtils;
+import io.jmix.core.FileClientManager;
 import io.jmix.core.FileInfoResponse;
 import io.jmix.core.FileStorage;
 import io.jmix.core.FileStorageLocator;
@@ -50,11 +50,10 @@ public class FileUploadController {
     protected Metadata metadata;
 
     @Autowired
-    protected FileStorageLocator fileStorageLocator;
+    FileClientManager fileClientManager;
 
     @Autowired
     protected AccessManager accessManager;
-
     /**
      * Method for simple file upload. File contents are placed in the request body. Optional file name parameter is
      * passed as a query param.
@@ -64,8 +63,7 @@ public class FileUploadController {
                                                        @RequestParam(required = false) String name,
                                                        @RequestParam(required = false) String storageName) {
         checkFileUploadPermission();
-        FileStorage fileStorage = FileClientUtils.getFileStorageByNameOrDefault(fileStorageLocator ,storageName, name);
-        return FileClientUtils.fileUpload(name, fileStorage, request);
+        return fileClientManager.fileUpload(name, storageName, request);
     }
 
     /**
@@ -77,8 +75,7 @@ public class FileUploadController {
                                                        @RequestParam(required = false) String storageName,
                                                        HttpServletRequest request) {
         checkFileUploadPermission();
-        FileStorage fileStorage = FileClientUtils.getFileStorageByNameOrDefault(fileStorageLocator ,storageName, name);
-        return FileClientUtils.multipartFileUpload(file, name, fileStorage, request);
+        return fileClientManager.multipartFileUpload(file, name, storageName, request);
     }
 
     protected void checkFileUploadPermission() {
