@@ -1,9 +1,0 @@
-{
-  "conditions": [
-    {
-      "property": "name",
-      "operator": ">",
-      "value": "Colour 1"
-    }
-  ]
-}
